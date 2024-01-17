@@ -1,7 +1,7 @@
-package bo.usfx.Web.Services.Country.controller;
+package bo.usfx.countries_api.controller;
 
-import bo.usfx.Web.Services.Country.model.Country;
-import bo.usfx.Web.Services.Country.repository.CountryRepository;
+import bo.usfx.countries_api.model.Country;
+import bo.usfx.countries_api.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

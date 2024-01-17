@@ -1,4 +1,4 @@
-package bo.usfx.Web.Services.Country.model;
+package bo.usfx.countries_api.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
