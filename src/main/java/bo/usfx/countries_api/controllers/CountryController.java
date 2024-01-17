@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public final class CountryController {
@@ -25,19 +26,18 @@ public final class CountryController {
         return countryRepository.findAll();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries/{id}")
-    public ResponseEntity<?> getById(@PathVariable final String id) {
-        Country country = countryRepository.findById(id).orElse(null);
-
-        if (country != null) {
+    /**
+     * Gets information about a country by name or.
+     * @param filter Country name or id
+     * @return ResponseEntity with country information if found, or empty ResponseEntity if not found.
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries/{filter}")
+    public ResponseEntity<?> getByNameOrId(@PathVariable final String filter) {
+        Optional<Country> country = countryRepository.findByNameOrId(filter, filter);
+        if (country.isPresent()) {
             return ResponseEntity.ok(country);
-        } else {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", 404);
-            errorResponse.put("message", "No se encontró un país con el ID especificado: " + id);
-
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "api/v1/countries")
