@@ -17,7 +17,7 @@ public final class Country {
     }
 
     // Establece el id del pais
-    public final void setId(final String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -27,7 +27,7 @@ public final class Country {
     }
 
     // Establece el nombre del pais
-    public final void setName(final String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -37,7 +37,7 @@ public final class Country {
     }
 
     // Establece la poblacion del pais
-    public final void setPopulation(final Integer population) {
+    public void setPopulation(final Integer population) {
         this.population = population;
     }
 }
