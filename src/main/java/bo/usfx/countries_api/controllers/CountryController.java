@@ -1,0 +1,93 @@
+package bo.usfx.countries_api.controllers;
+
+import bo.usfx.countries_api.models.Country;
+import bo.usfx.countries_api.repositories.CountryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+public final class CountryController {
+    @Autowired
+    private CountryRepository countryRepository;
+
+    @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries")
+    public List<Country> getAll() {
+        return countryRepository.findAll();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries/{id}")
+    public ResponseEntity<?> getById(@PathVariable final String id) {
+        Country country = countryRepository.findById(id).orElse(null);
+
+        if (country != null) {
+            return ResponseEntity.ok(country);
+        } else {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", 404);
+            errorResponse.put("message", "No se encontró un país con el ID especificado: " + id);
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "api/v1/countries")
+    public ResponseEntity<?> create(@RequestBody final Country country) {
+        var countryCreated = countryRepository.save(country);
+        return ResponseEntity.status(HttpStatus.CREATED).body(countryCreated);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "api/v1/countries/{id}")
+    public ResponseEntity<?> update(@PathVariable final String id, @RequestBody final Country country) {
+        Country countryToUpdate = countryRepository.findById(id).orElse(null);
+
+        if (countryToUpdate != null) {
+            countryToUpdate.setName(country.getName());
+            countryToUpdate.setCapital(country.getCapital());
+            countryToUpdate.setPopulation(country.getPopulation());
+            countryToUpdate.setArea(country.getArea());
+            countryToUpdate.setCurrency(country.getCurrency());
+            countryToUpdate.setLanguages(country.getLanguages());
+            countryToUpdate.setFlag(country.getFlag());
+
+            countryRepository.save(countryToUpdate);
+
+            return ResponseEntity.ok(countryToUpdate);
+        } else {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", 404);
+            errorResponse.put("message", "No se encontró un país con el ID especificado: " + id);
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "api/v1/countries/{id}")
+    public ResponseEntity<?> delete(@PathVariable final String id) {
+        Country countryToDelete = countryRepository.findById(id).orElse(null);
+
+        if (countryToDelete != null) {
+            countryRepository.delete(countryToDelete);
+
+            Map<String, Object> successResponse = new HashMap<>();
+            successResponse.put("message", "Se eliminó el país con el ID especificado: " + id);
+
+            return ResponseEntity.ok(successResponse);
+        } else {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", 404);
+            errorResponse.put("message", "No se encontró un país con el ID especificado: " + id);
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+    }
+}
