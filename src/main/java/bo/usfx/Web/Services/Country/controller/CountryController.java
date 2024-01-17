@@ -17,18 +17,18 @@ public class CountryController {
     @Autowired
     private CountryRepository countryRepository;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/v1/countrys")
+    @RequestMapping(method = RequestMethod.GET, value = "/api/v1/countries")
     public List<Country> getAll() {
         return countryRepository.findAll();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "api/v1/countrys/{id}")
+    @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries/{id}")
     public ResponseEntity<?> getById(@PathVariable String id) {
         var country = countryRepository.findById(id);
-        if (country != null) {
-            return ResponseEntity.ok(country);
+        if (country.isPresent()) {
+            return ResponseEntity.ok(country.get());
         }
-        return null;
+        return ResponseEntity.notFound().build();
     }
 
 }
