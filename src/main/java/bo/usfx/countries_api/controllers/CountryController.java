@@ -27,8 +27,7 @@ public final class CountryController {
     }
 
     /**
-     * Gets information about a country by name or
-     *
+     * Gets information about a country by name or.
      * @param filter Country name or id
      * @return ResponseEntity with country information if found, or empty ResponseEntity if not found.
      */
