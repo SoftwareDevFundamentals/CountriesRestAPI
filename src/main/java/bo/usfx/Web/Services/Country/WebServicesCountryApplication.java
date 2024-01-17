@@ -4,10 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WebServicesCountryApplication {
+public final class WebServicesCountryApplication {
+    private WebServicesCountryApplication() {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WebServicesCountryApplication.class, args);
-	}
+    }
+
+    public static void main(final String[] args) {
+        SpringApplication.run(WebServicesCountryApplication.class, args);
+    }
 
 }
