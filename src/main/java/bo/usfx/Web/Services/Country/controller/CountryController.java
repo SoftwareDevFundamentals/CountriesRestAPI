@@ -18,8 +18,9 @@ public class CountryController {
     private CountryRepository countryRepository;
 
     /**
-     *  Gets the list of all countries
-     *  @return List of countries
+     *  Gets the list of all countries.
+     *
+     *  @return List of countries.
      */
     @RequestMapping(method = RequestMethod.GET, value = "/api/v1/countries")
     public List<Country> getAll() {
@@ -27,9 +28,10 @@ public class CountryController {
     }
 
     /**
-     *  Gets an element from the list of all countries with the id
-     *  @param id Identificador del pais
-     *  @return country
+     *  Gets an element from the list of all countries with the id.
+     *
+     *  @param id Identificador del pais.
+     *  @return country.
      */
     @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries/{id}")
     public ResponseEntity<?> getById(@PathVariable final String id) {
