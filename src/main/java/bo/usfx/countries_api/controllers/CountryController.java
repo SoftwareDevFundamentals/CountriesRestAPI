@@ -40,8 +40,24 @@ public final class CountryController {
         return ResponseEntity.ok().build();
     }
 
+    /*@RequestMapping(method = RequestMethod.POST, value = "api/v1/countries")
+    public ResponseEntity<?> create(@RequestBody final Country country) {
+        var countryCreated = countryRepository.save(country);
+        return ResponseEntity.status(HttpStatus.CREATED).body(countryCreated);
+    }*/
+
     @RequestMapping(method = RequestMethod.POST, value = "api/v1/countries")
     public ResponseEntity<?> create(@RequestBody final Country country) {
+        Optional<Country> existingCountry = countryRepository.findByNameOrId(country.getName(), country.getId());
+        if(existingCountry.isPresent()) {
+            //Si existe devolvemos mensaje
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", 400);
+            errorResponse.put("message", "El pais con el mismo nombre o identificador ya ha sido creado");
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        //Si el pais no existe lo guardamos
         var countryCreated = countryRepository.save(country);
         return ResponseEntity.status(HttpStatus.CREATED).body(countryCreated);
     }
