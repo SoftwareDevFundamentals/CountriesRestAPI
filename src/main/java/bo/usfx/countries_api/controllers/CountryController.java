@@ -38,10 +38,10 @@ public final class CountryController {
     @GetMapping("/{filter}")
     public ResponseEntity<?> getByNameOrId(@PathVariable final String filter) {
         Optional<Country> countryOptional = countryRepository.findByNameOrId(filter.toLowerCase(), filter);
-        if (countryOptional.isPresent()){
+        if (countryOptional.isPresent()) {
             Country country = countryOptional.get();
             return ResponseEntity.ok(country);
-        }else {
+        } else {
             String errorMessage = "Name or Id no found";
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
@@ -53,7 +53,7 @@ public final class CountryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @Validated @RequestBody final Country country) {
+    public ResponseEntity<?> update(@PathVariable final String id, @Validated @RequestBody final Country country) {
         Optional<Country> countryToUpdateOptional = countryRepository.findById(id);
 
         if (countryToUpdateOptional.isPresent()) {
