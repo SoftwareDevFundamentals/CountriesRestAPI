@@ -108,7 +108,7 @@ public final class CountryController {
         if (countryToDelete.isPresent()) {
             countryRepository.delete(countryToDelete.get());
             String successMessage = "Deleted Country with ID: " + id;
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(successMessage);
+            return ResponseEntity.status(HttpStatus.OK).body(successMessage);
         } else {
             String errorMessage = "Id no found";
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
