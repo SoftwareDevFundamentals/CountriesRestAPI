@@ -69,6 +69,7 @@ public final class CountryController {
         //Si el pais no existe lo guardamos
         var countryCreated = countryRepository.save(country);
         return ResponseEntity.status(HttpStatus.CREATED).body(countryCreated);
+
     }
 
     @PutMapping("/{id}")
