@@ -55,13 +55,6 @@ public final class CountryController {
         }
     }
 
-
-    /*@RequestMapping(method = RequestMethod.POST, value = "api/v1/countries")
-    public ResponseEntity<?> create(@RequestBody final Country country) {
-        var countryCreated = countryRepository.save(country);
-        return ResponseEntity.status(HttpStatus.CREATED).body(countryCreated);
-    }*/
-
     @PostMapping
     public ResponseEntity<?> create(@RequestBody final Country country) {
         Optional<Country> existingCountry = countryRepository.findByNameOrId(country.getName(), country.getId());
