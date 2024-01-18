@@ -28,6 +28,7 @@ public final class CountryController {
 
     /**
      * Gets information about a country by name or.
+     *
      * @param filter Country name or id
      * @return ResponseEntity with country information if found, or empty ResponseEntity if not found.
      */
@@ -49,7 +50,7 @@ public final class CountryController {
     @RequestMapping(method = RequestMethod.POST, value = "api/v1/countries")
     public ResponseEntity<?> create(@RequestBody final Country country) {
         Optional<Country> existingCountry = countryRepository.findByNameOrId(country.getName(), country.getId());
-        if(existingCountry.isPresent()) {
+        if (existingCountry.isPresent()) {
             //Si existe devolvemos mensaje
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", 400);
