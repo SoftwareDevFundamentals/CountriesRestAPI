@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +23,18 @@ public final class CountryController {
     private CountryRepository countryRepository;
 
     @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries")
-    public List<Country> getAll() {
-        return countryRepository.findAll();
+    public List<Country> getAll(@RequestParam(required = false) final String area) {
+        if (area != null) {
+            String lowercaseArea = area.toLowerCase();
+            return countryRepository.findByAreaIgnoreCase(lowercaseArea);
+        } else {
+            return countryRepository.findAll();
+        }
     }
 
     /**
      * Gets information about a country by name or.
+     *
      * @param filter Country name or id
      * @return ResponseEntity with country information if found, or empty ResponseEntity if not found.
      */

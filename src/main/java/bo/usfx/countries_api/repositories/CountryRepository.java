@@ -4,9 +4,13 @@ import bo.usfx.countries_api.models.Country;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CountryRepository extends MongoRepository<Country, String> {
     @Query("{$or: [ {'name': ?0}, {'_id': ?1} ]}")
     Optional<Country> findByNameOrId(String name, String id);
+
+    @Query("{'area': { $regex: ?0, $options: 'i' }}")
+    List<Country> findByAreaIgnoreCase(String area);
 }
