@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CountryRepository extends MongoRepository<Country, String> {
-    @Query("{$or: [ {'name': ?0}, {'_id': ?1} ]}")
+    @Query("{$or: [ {'name': {$regex: ?0, $options: 'i'}}, {'_id': ?1} ]}")
     Optional<Country> findByNameOrId(String name, String id);
 
     @Query("{'area': { $regex: ?0, $options: 'i' }}")

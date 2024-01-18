@@ -5,9 +5,13 @@ import bo.usfx.countries_api.repositories.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,11 +22,12 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/v1/countries")
 public final class CountryController {
     @Autowired
     private CountryRepository countryRepository;
 
-    @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries")
+    @GetMapping
     public List<Country> getAll(@RequestParam(required = false) final String area) {
         if (area != null) {
             String lowercaseArea = area.toLowerCase();
@@ -38,14 +43,18 @@ public final class CountryController {
      * @param filter Country name or id
      * @return ResponseEntity with country information if found, or empty ResponseEntity if not found.
      */
-    @RequestMapping(method = RequestMethod.GET, value = "api/v1/countries/{filter}")
+    @GetMapping("/{filter}")
     public ResponseEntity<?> getByNameOrId(@PathVariable final String filter) {
-        Optional<Country> country = countryRepository.findByNameOrId(filter, filter);
-        if (country.isPresent()) {
+        Optional<Country> countryOptional = countryRepository.findByNameOrId(filter.toLowerCase(), filter);
+        if (countryOptional.isPresent()) {
+            Country country = countryOptional.get();
             return ResponseEntity.ok(country);
+        } else {
+            String errorMessage = "Name or Id no found";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
-        return ResponseEntity.ok().build();
     }
+
 
     /*@RequestMapping(method = RequestMethod.POST, value = "api/v1/countries")
     public ResponseEntity<?> create(@RequestBody final Country country) {
@@ -53,7 +62,7 @@ public final class CountryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(countryCreated);
     }*/
 
-    @RequestMapping(method = RequestMethod.POST, value = "api/v1/countries")
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody final Country country) {
         Optional<Country> existingCountry = countryRepository.findByNameOrId(country.getName(), country.getId());
         if (existingCountry.isPresent()) {
@@ -69,48 +78,46 @@ public final class CountryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(countryCreated);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "api/v1/countries/{id}")
-    public ResponseEntity<?> update(@PathVariable final String id, @RequestBody final Country country) {
-        Country countryToUpdate = countryRepository.findById(id).orElse(null);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable final String id, @Validated @RequestBody final Country country) {
+        Optional<Country> countryToUpdateOptional = countryRepository.findById(id);
 
-        if (countryToUpdate != null) {
+        if (countryToUpdateOptional.isPresent()) {
+            Country countryToUpdate = countryToUpdateOptional.get();
             countryToUpdate.setName(country.getName());
+            countryToUpdate.setArea(country.getArea());
             countryToUpdate.setCapital(country.getCapital());
             countryToUpdate.setPopulation(country.getPopulation());
-            countryToUpdate.setArea(country.getArea());
-            countryToUpdate.setCurrency(country.getCurrency());
+            countryToUpdate.setCities(country.getCities());
             countryToUpdate.setLanguages(country.getLanguages());
+            countryToUpdate.setExtension(country.getExtension());
+            countryToUpdate.setLatitude(country.getLatitude());
+            countryToUpdate.setLongitude(country.getLongitude());
+            countryToUpdate.setCurrency(country.getCurrency());
+            countryToUpdate.setSecurityLevel(country.getSecurityLevel());
             countryToUpdate.setFlag(country.getFlag());
-
+            countryToUpdate.setCodeCountry(country.getCodeCountry());
+            countryToUpdate.setDemonym(country.getDemonym());
+            countryToUpdate.setTypeOfWeather(country.getTypeOfWeather());
+            countryToUpdate.setEconomy(country.getEconomy());
             countryRepository.save(countryToUpdate);
-
             return ResponseEntity.ok(countryToUpdate);
         } else {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", 404);
-            errorResponse.put("message", "No se encontró un país con el ID especificado: " + id);
-
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+            String errorMessage = "Id no found";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "api/v1/countries/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable final String id) {
-        Country countryToDelete = countryRepository.findById(id).orElse(null);
-
-        if (countryToDelete != null) {
-            countryRepository.delete(countryToDelete);
-
-            Map<String, Object> successResponse = new HashMap<>();
-            successResponse.put("message", "Se eliminó el país con el ID especificado: " + id);
-
-            return ResponseEntity.ok(successResponse);
+        Optional<Country> countryToDelete = countryRepository.findById(id);
+        if (countryToDelete.isPresent()) {
+            countryRepository.delete(countryToDelete.get());
+            String successMessage = "Deleted Country with ID: " + id;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(successMessage);
         } else {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", 404);
-            errorResponse.put("message", "No se encontró un país con el ID especificado: " + id);
-
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+            String errorMessage = "Id no found";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
     }
 }
