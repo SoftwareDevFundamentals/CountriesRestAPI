@@ -60,6 +60,8 @@ public final class CountryController {
      *
      * verify that there is no other country with the same name.
      * If it exists, it does not create the country and sends an error message
+     *  @param country Country name
+     * @return ResponseEntity with country information if found, or empty ResponseEntity if not found.
      */
     @PostMapping
     public ResponseEntity<?> create(@RequestBody final Country country) {
@@ -82,6 +84,9 @@ public final class CountryController {
      * Modify an existing country.
      *
      * Check the country ID, if it exists it is modified.
+     *  @param country Country name
+     *   @param id Country id
+     * @return ResponseEntity with country information if found, or empty ResponseEntity if not found.
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable final String id, @Validated @RequestBody final Country country) {
@@ -120,6 +125,8 @@ public final class CountryController {
      * The ID of the country that is going to be deleted is verified
      * If it exists, the record is deleted
      * If not, it sends an error message
+     *  @param id Country id
+     * @return ResponseEntity with country information if found, or empty ResponseEntity if not found.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable final String id) {
