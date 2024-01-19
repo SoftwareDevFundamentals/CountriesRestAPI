@@ -55,23 +55,34 @@ public final class CountryController {
         }
     }
 
+    /**
+     * Create a new country.
+     *
+     * verify that there is no other country with the same name.
+     * If it exists, it does not create the country and sends an error message
+     */
     @PostMapping
     public ResponseEntity<?> create(@RequestBody final Country country) {
         Optional<Country> existingCountry = countryRepository.findByNameOrId(country.getName(), country.getId());
         if (existingCountry.isPresent()) {
-            //Si existe devolvemos mensaje
+            //If it exists, it returns the message
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", 400);
-            errorResponse.put("message", "El pais con el mismo nombre o identificador ya ha sido creado");
+            errorResponse.put("message", "The country with the same name or identifier has already been created");
 
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
-        //Si el pais no existe lo guardamos
+        //If the country does not exist, it is saved
         var countryCreated = countryRepository.save(country);
         return ResponseEntity.status(HttpStatus.CREATED).body(countryCreated);
 
     }
 
+    /**
+     * Modify an existing country.
+     *
+     * Check the country ID, if it exists it is modified.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable final String id, @Validated @RequestBody final Country country) {
         Optional<Country> countryToUpdateOptional = countryRepository.findById(id);
@@ -102,6 +113,14 @@ public final class CountryController {
         }
     }
 
+
+    /**
+     * delete the record of a country.
+     *
+     * The ID of the country that is going to be deleted is verified
+     * If it exists, the record is deleted
+     * If not, it sends an error message
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable final String id) {
         Optional<Country> countryToDelete = countryRepository.findById(id);
